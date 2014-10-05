@@ -1,6 +1,7 @@
 import numpy
 import math
 import scipy.optimize as opt
+from random import randint
 
 from numpy import loadtxt, where, zeros, e, array, log, ones, append, linspace
 from pylab import scatter, show, legend, xlabel, ylabel, contour, title
