@@ -1,5 +1,6 @@
 import numpy as np
 import math
+from random import randint
 
 def trainTheta():
     neutral = open('neutral.csv', 'r')
@@ -69,7 +70,7 @@ def trainTheta():
     
     
     # MACHINE LEARNING...
-    theta = 50.0 # Chosen by random number generator: KhoKho, guaranteed to be random.
+    theta = randint(1, 500) # Chosen by random number generator: KhoKho, guaranteed to be random.
     alpha = .0001 # 0.001 <-> 10 Try many.
     
     for i in range(7000):     # Arbitrary number of iterations (Gradient Descent)
