@@ -47,7 +47,7 @@ class Grapher(object):
         self.range = float(1 << 13)
         self.x_offset = 40
         #self.y = i * gheight
-        self.y = i * gheight*6 +125
+        self.y = i * gheight*5+50
         self.buffer = []
         font = pygame.font.Font(None, 24)
         self.text = font.render(self.name, 1, (255, 0, 0))
@@ -98,7 +98,7 @@ def main():
     """
     global gheight
     pygame.init()
-    screen = pygame.display.set_mode((800, 600))
+    screen = pygame.display.set_mode((1280, 800))
     graphers = []
     recordings = []
     recording = False
@@ -106,7 +106,7 @@ def main():
     updated = False
     cursor_x, cursor_y = 400, 300
     #for name in 'AF3 F7 F3 FC5 T7 P7 O1 O2 P8 T8 FC6 F4 F8 AF4'.split(' '):
-    for name in 'P7 P8'.split(' '):
+    for name in 'AF4 P8 F4 T8 O2'.split(' '):
         graphers.append(Grapher(screen, name, len(graphers)))
     fullscreen = False
     emotiv = Emotiv(display_output=True)
@@ -123,10 +123,10 @@ def main():
                     return
                 elif event.key == pygame.K_f:
                     if fullscreen:
-                        screen = pygame.display.set_mode((800, 600))
+                        screen = pygame.display.set_mode((1280, 800))
                         fullscreen = False
                     else:
-                        screen = pygame.display.set_mode((800, 600), FULLSCREEN, 16)
+                        screen = pygame.display.set_mode((1280, 800), FULLSCREEN, 16)
                         fullscreen = True
                 elif event.key == pygame.K_r:
                     if not recording:
@@ -141,11 +141,11 @@ def main():
             while packets_in_queue < 8:
                 packet = emotiv.dequeue()
                 if abs(packet.gyro_x) > 1:
-                    cursor_x = max(0, min(cursor_x, 800))
+                    cursor_x = max(0, min(cursor_x, 1280))
                     cursor_x -= packet.gyro_x
                 if abs(packet.gyro_y) > 1:
                     cursor_y += packet.gyro_y
-                    cursor_y = max(0, min(cursor_y, 600))
+                    cursor_y = max(0, min(cursor_y, 800))
                 map(lambda x: x.update(packet), graphers)
                 if recording:
                     record_packets.append(packet)
@@ -163,7 +163,7 @@ def main():
         gevent.sleep(0)
 
 try:
-    gheight = 580 / 14
+    gheight = 580 / 20
     main()
 
 except Exception, e:

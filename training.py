@@ -1,7 +1,36 @@
-import numpy as np
+import numpy
 import math
+import scipy.optimize as opt
 
-def trainTheta():
+from numpy import loadtxt, where, zeros, e, array, log, ones, append, linspace
+from pylab import scatter, show, legend, xlabel, ylabel, contour, title
+from scipy.optimize import fmin_bfgs
+
+def sigmoid(X):
+    return 1 / (1 + numpy.exp(-X))
+
+def cost(theta, X, y):
+    p_1 = sigmoid(numpy.dot(X, theta)) # predicted probability of label 1
+    log_l = (-y)*numpy.log(p_1) - (1-y)*numpy.log(1-p_1) # log-likelihood vector
+
+    return log_l.mean()
+
+def grad(theta, X, y):
+    p_1 = sigmoid(numpy.dot(X, theta))
+    error = p_1 - y # difference between label and prediction
+    grad = numpy.dot(error, X_1) / y.size # gradient vector
+    
+    return grad
+    
+def predict(theta, X, y):
+    p_1 = sigmoid(numpy.dot(X, theta))
+    return p_1 > 0.5
+
+#
+p = predict(array(theta), it)
+print 'Train Accuracy: %f' % ((y[where(p == y)].size / float(y.size)) * 100.0)
+
+def trainTheta(theta):
     neutral = open('neutral.csv', 'r')
     push = open('push.csv', 'r')
     
@@ -32,7 +61,6 @@ def trainTheta():
     # Calculate variances
     Xneutral = []
     Xpush = []
-    Xfeatures = []
     counter = 0
     for i in neutralRaw:
         if (counter >= 9):
@@ -40,7 +68,6 @@ def trainTheta():
             for ii in range(10):
                 arr.append(neutralRaw[i-ii])
             Xneutral.append(np.var(arr))
-            Xfeatures.append(np.var(arr))
         counter += 1
     
     counter = 0
@@ -50,18 +77,16 @@ def trainTheta():
             for ii in range(10):
                 arr.append(pushRaw[i-ii])
             Xpush.append(np.var(arr))
-            Xfeatures[1].append(np.var(arr))
         counter += 1
     
     # Feature Scaling / Mean Normalization
-    meanNeutral = sum(Xneutral)/float(len(Xneutral))
-    meanPush = sum(Xpush)/float(len(Xpush))
+    #meanNeutral = sum(Xneutral)/float(len(Xneutral))
+    #meanPush = sum(Xpush)/float(len(Xpush))
     
-    for i in range(len(Xneutral)):
-        Xneutral[i] -= meanNeutral
-    for i in range(len(Xpush)):
-        Xpush[i] -= meanPush
-        
+    #for i in range(len(Xneutral)):
+    #    Xneutral[i] -= meanNeutral
+    #for i in range(len(Xpush)):
+    #    Xpush[i] -= meanPush
         
     #max(Xneutral)-min(Xneutral)
 
@@ -70,9 +95,9 @@ def trainTheta():
     
     # MACHINE LEARNING...
     theta = 50.0 # Chosen by random number generator: KhoKho, guaranteed to be random.
-    alpha = .0001 # 0.001 <-> 10 Try many.
+    alpha = .01 # 0.001 <-> 10 Try many.
     
-    for i in range(7000):     # Arbitrary number of iterations (Gradient Descent)
+    for i in range(700):     # Arbitrary number of iterations (Gradient Descent)
         sumHypoNeutral = 0.0
         sumHypoPush = 0.0
         for ii in Xneutral:
